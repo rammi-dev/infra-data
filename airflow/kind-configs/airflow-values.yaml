@@ -1,0 +1,67 @@
+airflow:
+  image:
+    repository: apache/airflow
+    tag: 2.6.0
+  executor: CeleryKubernetesExecutor
+
+  dags:
+    persistence:
+      enabled: true
+      existingClaim: pvc-airflow-dags
+      mountPath: /opt/airflow/dags  # The path where Airflow expects to find the DAGs
+
+  celery:
+    worker:
+      replicas: 3
+      
+  webserver:
+    service:
+      port: 8080
+      type: LoadBalancer
+    replicas: 1
+    volumeMounts:
+      - name: dags-pvc
+        mountPath: /opt/airflow/dags  # Mount DAG PVC to webserver at the expected path
+
+  volumes:
+    - name: dags-pvc
+      persistentVolumeClaim:
+        claimName: pvc-airflow-dags  # Reference the PVC by its name
+
+  persistence:
+    enabled: true
+    existingClaim: pvc-airflow-dags  # Reference the PVC to store the DAGs
+    mountPath: /opt/airflow/dags  # Where Airflow stores its DAGs inside the container
+
+  service:
+    type: ClusterIP
+
+  logs:
+    persistence:
+      enabled: true
+      existingClaim: pvc-airflow-logs  # You can also configure a separate PVC for logs
+      mountPath: /opt/airflow/logs
+
+  config:
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'False'  # Disable loading of example DAGs
+
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1000m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+  webserver:
+    service:
+      port: 8080
+      type: LoadBalancer
+    replicas: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
