@@ -1,0 +1,16 @@
+executor: CeleryKubernetesExecutor
+airflow:
+  image:
+    repository: apache/airflow
+    tag: 2.7.0  # Change this to the desired version of Airflow
+  defaultAirflowRepository: apache/airflow
+  defaultAirflowVersion: 2.7.0
+  defaultAirflowImageTag: "2.7.0"
+  deploy:
+    persistence:
+      enabled: true
+      size: 10Gi
+    worker:
+      replicas: 3
+    flower:
+      enabled: true
