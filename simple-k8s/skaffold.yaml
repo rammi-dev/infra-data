@@ -1,0 +1,42 @@
+apiVersion: skaffold/v2beta35
+kind: Config
+metadata:
+  name: my-project
+
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.USER}}-{{.DATE}}" 
+    artifacts:
+    - image: my-app-image
+      context: .
+      docker:
+        dockerfile: Dockerfile
+
+deploy:
+  helm:
+    releases:
+      - name: airflow
+        chartPath: bitnami/airflow
+        namespace: airflow
+        valuesFiles:
+          - ./helm/airflow/values.yaml
+        set:
+          executor: CeleryExecutor
+          web.port: 8080
+
+      - name: minio
+        chartPath: bitnami/minio
+        namespace: minio
+        valuesFiles:
+          - ./helm/minio/values.yaml
+        set:
+          accessKey: "minio"
+          secretKey: "minio123"
+
+      - name: my-app
+        chartPath: ./helm/my-app
+        namespace: dev
+        values:
+          image.repository: my-app-image
+          image.tag: "{{.IMAGE_TAG}}"
