@@ -1,0 +1,29 @@
+apiVersion: operator.zalando.org/v1
+kind: PostgreSQLCluster
+metadata:
+  name: my-postgresql-cluster
+spec:
+  teamID: "your-team-id"
+  volume:
+    size: {{ .Values.postgresql.storageSize }}
+  numberOfInstances: {{ .Values.postgresql.replicas }}
+  users:
+    {{ .Values.postgresql.username }}:
+      - superuser
+  databases:
+    {{ .Values.postgresql.database }}: {{ .Values.postgresql.username }}
+  postgresql:
+    version: "13"
+    password: {{ .Values.postgresql.postgresqlPostgresPassword }}
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+  persistence:
+    enabled: {{ .Values.postgresql.persistence.enabled }}
+    size: {{ .Values.postgresql.persistence.size }}
+  enableMasterLoadBalancer: true
+  enableReplicaLoadBalancer: true
