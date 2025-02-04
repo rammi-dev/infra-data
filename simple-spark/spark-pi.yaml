@@ -1,0 +1,28 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: spark-pi-python
+  namespace: default
+spec:
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: spark:3.5.3
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+  sparkVersion: 3.5.3
+  driver:
+    cores: 1
+    memory: 512m
+    serviceAccount: spark-operator-spark
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - /bin/bash
+          - -c
+          - touch /var/run/killspark && sleep 165
+  executor:
+    instances: 5
+    cores: 5
+    memory: 512m
