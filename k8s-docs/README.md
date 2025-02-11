@@ -38,3 +38,16 @@ Records type
 A example.com.  IN  A  192.0.2.1    -> IPv4
 AAAA  example.com.  IN  AAAA  2606:2800:220:1:248:1893:25c8:1946  -> IPv6 address
 CNAME www.example.com.  IN  CNAME  example.com.      -> aliases
+
+
+nslookup - resolve IP for in DNS but not locally
+dig - dbs test resolution
+
+-----------------------------
+coreDNS
+
+.:1053 {
+  forward . 8.8.8.8
+}
+
+Coredns to work on 1053 not 53s
