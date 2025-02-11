@@ -23,3 +23,10 @@ NetworkManager - common in desktop ubuntu
 -------
 
 ifupdown 
+
+# DNS
+ORder in which names are resolved 
+cat /etc/nsswitch.conf
+
+hosts:          files dns
+-----------------------------
