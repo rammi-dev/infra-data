@@ -2,7 +2,7 @@
 # Prerequisites:
 - isntalled VirtualBox
 - installed vagrant
-# Select virtual base box
+# Select virtual base box make sure you use VBox as preovider and amd as architecture
 https://portal.cloud.hashicorp.com/vagrant/discover
 
 # prepare Vagrant file
